@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
+import json
 import joblib
 import os
 
@@ -24,10 +25,23 @@ def train_model():
     model.fit(X_train, y_train)
 
     predictions = model.predict(X_test)
+    
+    # A metric for determining the accuracy of an assumption
     r2 = r2_score(y_test, predictions)
+    
+    metrics = {
+        "r2_score": float(r2),
+        "features_count": len(X.columns)
+    }
+
+    with open('models/metrics.json', 'w') as f:
+        json.dump(metrics, f)
 
     os.makedirs('models', exist_ok=True)
+    # Export Model
     joblib.dump(model, 'models/housing_model.plk')
+    # Export columns for API
+    joblib.dump(list(X.columns), 'models/column_names.pkl') 
 
 if __name__ == "__main__":
     train_model()
