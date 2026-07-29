@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestRegressor
 import matplotlib.pyplot as plt
 import json
 import joblib
