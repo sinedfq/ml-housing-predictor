@@ -4,7 +4,7 @@
 
 ## Стек технологий
 *   **Backend:** Python, FastAPI, Uvicorn
-*   **ML & Data Science:** Scikit-learn, CatBoost, Pandas, NumPy, Joblib
+*   **ML & Data Science:** Scikit-learn, CatBoost, Pandas, NumPy, Joblib, pyTorch
 *   **Testing:** Pytest, TestClient
 *   **Visualization:** Matplotlib
 
@@ -28,6 +28,10 @@
 2.  Обучите модель (генерирует файлы в папке `models/`):
     ```bash
     python src/train.py
+    ```
+
+    ```bash
+    python srs/train_nn.py
     ```
 
 3.  Запустите API сервер:
