@@ -19,7 +19,8 @@ def train_model():
     
     df_clean = nb[columns_to_use].dropna()
 
-    print("New DF: ", df_clean.head())
+    print(nb.columns.tolist())
+
     X = df_clean.drop('price_rub', axis=1)
     y = df_clean['price_rub']
 
