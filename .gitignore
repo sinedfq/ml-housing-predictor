@@ -185,3 +185,6 @@ models/*.pt
 models/*.json     
 models/*.png      
 models/*.log
+models/
+catboost_info/
+data/monthly_stats.csv
