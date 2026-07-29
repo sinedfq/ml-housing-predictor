@@ -18,6 +18,11 @@ class HomeInput(BaseModel):
     to_center_km: float
     metro_distance_min: int
     district: str
+    floor: int
+    total_floors: int
+    complex_class: str
+    developer: str
+    okrug: str
 
 
 @app.post("/predict")
