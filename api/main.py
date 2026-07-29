@@ -18,13 +18,18 @@ class HomeInput(BaseModel):
     to_center_km: float
     metro_distance_min: int
     district: str
+    floor: int
+    total_floors: int
+    complex_class: str
+    developer: str
+    okrug: str
+
 
 
 @app.post("/predict")
 def predict_price(house: HomeInput):
     input_data = pd.DataFrame([house.dict()])
-    input_encoded = pd.get_dummies(input_data, columns=['district'])
-    input_final = input_encoded.reindex(columns=expected_columns, fill_value=0)
+    input_final = input_data.reindex(columns=expected_columns, fill_value=0)
     prediction = model.predict(input_final)[0]
 
 
