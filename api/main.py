@@ -25,7 +25,6 @@ class HomeInput(BaseModel):
     okrug: str
 
 
-
 @app.post("/predict")
 def predict_price(house: HomeInput):
     input_data = pd.DataFrame([house.dict()])

@@ -39,6 +39,7 @@ def train_model():
     
     # A metric for determining the accuracy of an assumption
     r2 = r2_score(y_test, predictions)
+    print("R2 metic:", r2)
     
     metrics = {
         "r2_score": float(r2),
@@ -70,6 +71,10 @@ def train_model():
     joblib.dump(model, 'models/housing_model.plk')
     # Export columns for API
     joblib.dump(list(X.columns), 'models/column_names.pkl') 
+
+    # feature_importance = pd.Series(model.coef_, index=X.columns)
+    # print("\n--- Важность признаков (коэффициенты) ---")
+    # print(feature_importance.sort_values(ascending=False).head(10))
 
 if __name__ == "__main__":
     train_model()
