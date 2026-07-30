@@ -8,7 +8,7 @@ import torch.nn as nn
 
 app = FastAPI()
 
-model = joblib.load('models/housing_model.plk')
+cat_boost_model = joblib.load('models/housing_model.plk')
 expected_columns = joblib.load('models/column_names.pkl')
 
 class PricePredictor(nn.Module):
@@ -23,12 +23,18 @@ class PricePredictor(nn.Module):
         x = self.layer2(x)
         return x
 
-trend_model = PricePredictor(input_size=1, hidden_size=16)
-trend_model.load_state_dict(torch.load('models/price_trend_model.pth', weights_only=True))
-trend_model.eval()
+trend_models = {}
+max_prices = {}
+classes = ['business', 'comfort', 'economy']
 
-history_df = pd.read_csv('data/monthly_stats.csv')
-global_max_price = joblib.load('models/max_price.pkl')
+for cls in classes:
+    t_model = PricePredictor(input_size=3, hidden_size=16) 
+    t_model.load_state_dict(torch.load(f'models/trend_{cls}.pth', weights_only=True))
+    t_model.eval()
+    trend_models[cls] = t_model
+    max_prices[cls] = joblib.load(f'models/max_price_{cls}.pkl')
+
+history_df = pd.read_csv('data/class_monthly_stats.csv')
 
 with open('models/metrics.json', 'r') as f:
     metrics = json.load(f)
@@ -50,21 +56,29 @@ class HomeInput(BaseModel):
 def predict_price(house: HomeInput):
     input_data = pd.DataFrame([house.dict()])
     input_final = input_data.reindex(columns=expected_columns, fill_value=0)
-    prediction = model.predict(input_final)[0]
+    prediction = cat_boost_model.predict(input_final)[0]
 
-    base_price = model.predict(input_final)[0]
-    last_3_month = history_df.tail(3)['avg_price'].values / global_max_price
-    input_tensor = torch.FloatTensor(last_3_month).unsqueeze(-1)
+    house_class = house.complex_class.lower()
 
-    with torch.no_grad():
-        prediction_norm = trend_model(input_tensor)
+    if house_class in trend_models:
+        class_history = history_df[history_df['complex_class'] == house_class]
 
-    future_avg_price = prediction_norm[-1].item() * global_max_price
+        if len(class_history) >= 3:
+            last_3 = class_history.tail(3)['avg_price'].values
+            current_max = max_prices[house_class]
+            last_3_norm = last_3 / current_max
 
+            input_tensor = torch.FloatTensor(last_3_norm)
 
+            with torch.no_grad():
+                trend_pred_norm = trend_models[house_class](input_tensor)
+
+            future_avg_price = trend_pred_norm[-1].item() * current_max
+        else:
+            future_avg_price = None 
 
     return {
         "predicted_price_rub": round(prediction, 2),
         "model_r2_score": round(metrics["r2_score"], 3), 
-        "market_trend_prediction": round(future_avg_price, 2)
+        "future_avg_price": round(future_avg_price, 4)
     }
