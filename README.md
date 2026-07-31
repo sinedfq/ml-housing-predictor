@@ -7,6 +7,7 @@
 *   **ML & Data Science:** Scikit-learn, CatBoost, Pandas, NumPy, Joblib, pyTorch
 *   **Testing:** Pytest, TestClient
 *   **Visualization:** Matplotlib
+*   **Containerization:** Docker
 
 ## Результаты модели
 В ходе работы были протестированы несколько алгоритмов (LinearRegression, RandomForest, CatBoost). Лучший результат показал **CatBoost Regressor**:
