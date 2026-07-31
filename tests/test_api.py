@@ -26,3 +26,10 @@ def test_predict_price():
 
     assert isinstance(price, float)
     assert price > 0
+
+    assert "future_avg_price" in data 
+
+    future_price = data["future_avg_price"]
+
+    assert isinstance(future_price, float)
+    assert future_price > 0
