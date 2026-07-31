@@ -42,6 +42,16 @@
 
 4.  Документация API (Swagger) доступна по адресу: `http://127.0.0.1:8001/docs`
 
+## Запуск Docker
+
+1. ``` bash
+   docker compose build --no-cache
+   ```
+   
+2. ```bash
+   docker compose up
+   ```
+
 ## Тестирование
 Проект покрыт интеграционными тестами. Для запуска:
 ```bash
